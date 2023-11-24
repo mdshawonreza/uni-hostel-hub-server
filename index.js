@@ -3,7 +3,7 @@ const cors = require('cors');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 
 
 
@@ -35,7 +35,13 @@ async function run() {
             const result=await mealCollection.find().toArray()
             res.send(result)
         })
-
+        
+        app.get('/meals/:id',async(req,res)=>{
+            const id=req.params.id
+            const query={_id: new ObjectId(id)}
+            const result= await mealCollection.findOne(query)
+            res.send(result)
+          })
         
 
 
@@ -57,6 +63,8 @@ run().catch(console.dir);
 app.get('/', (req, res) => {
     res.send('uniHostelHub server is running')
 })
+
+ 
 
 app.listen(port, () => {
     console.log(`uniHostelHub server is running on port : ${port}`)
