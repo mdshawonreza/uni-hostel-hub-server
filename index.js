@@ -55,6 +55,27 @@ async function run() {
             const result=await mealCollection.deleteOne(query)
             res.send(result)
         })  
+        app.patch('/meals/:id',async(req,res)=>{
+            const meal=req.body
+            const id=req.params.id
+            const filter= {_id: new ObjectId(id)}
+            const updatedDoc={
+                $set:{
+                    mealTitle: meal.mealTitle,
+                    reviews: meal.reviews,
+                    mealCategory: meal.mealCategory,
+                    price: meal.price,
+                    description: meal.description,
+                    rating: meal.rating,
+                    date: meal.date,
+                    likes: meal.likes,
+                    ingredients: meal.ingredients,
+                    image: meal.image
+                }
+            }
+            const result=await mealCollection.updateOne(filter,updatedDoc)
+            res.send(result)
+        })
 
 
 
