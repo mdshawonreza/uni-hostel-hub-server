@@ -32,6 +32,11 @@ async function run() {
         const userCollection = client.db("hostelDB").collection("users");
 
         // meals related operation
+        app.post('/meals', async(req,res)=>{
+            const meal=req.body
+            const result=await mealCollection.insertOne(meal)
+            res.send(result)
+        })
         app.get('/meals',async(req,res)=>{
             const result=await mealCollection.find().toArray()
             res.send(result)
@@ -75,6 +80,17 @@ async function run() {
             }
             const result=await userCollection.updateOne(filter,updatedDoc)
             res.send(result)
+        })
+        app.get('/users/admin/:email' ,async(req,res)=>{
+            const email= req.params.email
+
+            const query={email: email}
+            const user = await userCollection.findOne(query)
+            let admin=false
+            if (user) {
+                admin=user.role === "admin"
+            }
+            res.send({admin})
         })
 
 
