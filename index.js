@@ -30,6 +30,8 @@ async function run() {
 
         const mealCollection = client.db("hostelDB").collection("meals");
         const userCollection = client.db("hostelDB").collection("users");
+        const mealRequestCollection = client.db("hostelDB").collection("mealRequests");
+        const reviewCollection = client.db("hostelDB").collection("reviews");
 
         // meals related operation
         app.post('/meals', async(req,res)=>{
@@ -74,6 +76,23 @@ async function run() {
                 }
             }
             const result=await mealCollection.updateOne(filter,updatedDoc)
+            res.send(result)
+        })
+
+
+        //meal request related api
+        app.post('/mealRequests', async(req,res)=>{
+            const mealRequest=req.body
+            const result=await mealRequestCollection.insertOne(mealRequest)
+            res.send(result)
+        })
+
+
+
+        //meal reviews related api
+        app.post('/reviews', async(req,res)=>{
+            const review=req.body
+            const result=await reviewCollection.insertOne(review)
             res.send(result)
         })
 
