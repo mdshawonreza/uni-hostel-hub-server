@@ -32,6 +32,7 @@ async function run() {
         const userCollection = client.db("hostelDB").collection("users");
         const mealRequestCollection = client.db("hostelDB").collection("mealRequests");
         const reviewCollection = client.db("hostelDB").collection("reviews");
+        const upcomingMealCollection = client.db("hostelDB").collection("upcomingMeals");
 
         // meals related operation
         app.post('/meals', async(req,res)=>{
@@ -96,6 +97,18 @@ async function run() {
             res.send(result)
         })
 
+        //upcoming meal related api
+
+        app.post('/upcomingMeals', async(req,res)=>{
+            const upcomingMeal=req.body
+            const result=await upcomingMealCollection.insertOne(upcomingMeal)
+            res.send(result)
+        })
+
+        app.get('/upcomingMeals',async(req,res)=>{
+            const result=await upcomingMealCollection.find().toArray()
+            res.send(result)
+        })
 
 
         //   user related api
