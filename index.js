@@ -33,6 +33,7 @@ async function run() {
         const mealRequestCollection = client.db("hostelDB").collection("mealRequests");
         const reviewCollection = client.db("hostelDB").collection("reviews");
         const upcomingMealCollection = client.db("hostelDB").collection("upcomingMeals");
+        const memberCollection = client.db("hostelDB").collection("memberships");
 
         // meals related operation
         app.post('/meals', async(req,res)=>{
@@ -80,6 +81,19 @@ async function run() {
             res.send(result)
         })
 
+        app.get('/adminMeals', async (req, res) => {
+
+            console.log(req.query.email)
+           
+            let query = {};
+            if (req.query?.email) {
+              query = { adminEmail:req.query.email}
+            }
+            const result = await mealCollection.find(query).toArray()
+            res.send(result);
+          })
+      
+
 
         //meal request related api
         app.post('/mealRequests', async(req,res)=>{
@@ -87,6 +101,21 @@ async function run() {
             const result=await mealRequestCollection.insertOne(mealRequest)
             res.send(result)
         })
+        app.get ('/mealRequests',async(req,res)=>{
+            const result=await mealRequestCollection.find().toArray()
+            res.send(result)
+        })
+        app.get('/requests', async (req, res) => {
+
+            console.log(req.query.email)
+           
+            let query = {};
+            if (req.query?.email) {
+              query = { email:req.query.email}
+            }
+            const result = await mealRequestCollection.find(query).toArray()
+            res.send(result);
+          })
 
 
 
@@ -96,6 +125,53 @@ async function run() {
             const result=await reviewCollection.insertOne(review)
             res.send(result)
         })
+
+        app.get('/reviews',async(req,res)=>{
+            const result=await reviewCollection.find().toArray()
+            res.send(result)
+        })
+
+         app.delete('/reviews/:id',async(req,res)=>{
+            const id=req.params.id
+            const query={_id: new ObjectId(id)}
+            const result=await reviewCollection.deleteOne(query)
+            res.send(result)
+        }) 
+         
+
+        app.get('/mealReviews', async (req, res) => {
+
+            console.log(req.query.email)
+           
+            let query = {};
+            if (req.query?.email) {
+              query = { email:req.query.email}
+            }
+            const result = await reviewCollection.find(query).toArray()
+            res.send(result);
+          })
+
+          app.get('/reviews/:id',async(req,res)=>{
+            const id=req.params.id
+            const query={_id: new ObjectId(id)}
+            const result= await reviewCollection.findOne(query)
+            res.send(result)
+          })
+
+          app.patch('/reviews/:id',async(req,res)=>{
+            const review=req.body
+            const id=req.params.id
+            const filter= {_id: new ObjectId(id)}
+            const updatedDoc={
+                $set:{
+                    review: review.review,
+                    
+                }
+            }
+            const result=await reviewCollection.updateOne(filter,updatedDoc)
+            res.send(result)
+        })
+        
 
         //upcoming meal related api
 
@@ -109,6 +185,23 @@ async function run() {
             const result=await upcomingMealCollection.find().toArray()
             res.send(result)
         })
+
+    
+        //memberships related api
+        
+        app.get('/memberships',async(req,res)=>{
+            const result=await memberCollection.find().toArray()
+            res.send(result)
+        })
+
+
+
+        app.get('/memberships/:id',async(req,res)=>{
+            const id=req.params.id
+            const query={_id: new ObjectId(id)}
+            const result= await memberCollection.findOne(query)
+            res.send(result)
+          })
 
 
         //   user related api
